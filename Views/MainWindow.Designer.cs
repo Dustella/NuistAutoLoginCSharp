@@ -62,6 +62,7 @@
             this.LoginButton.TabIndex = 1;
             this.LoginButton.Text = "登陆";
             this.LoginButton.UseVisualStyleBackColor = true;
+            this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
             // 
             // UsernameInput
             // 

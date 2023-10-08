@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using NuistAutoLogin.Modules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +19,24 @@ namespace NuistAutoLogin
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+
+            var builder = Host.CreateDefaultBuilder();
+
+            var host = builder.ConfigureServices((context, services) =>
+            {
+                services.AddSingleton<Api>();
+                services.AddSingleton<States>();
+                services.AddTransient<MainWindow>();
+                //services.AddSingleton<Logger>();
+                
+            })
+            .Build().Services
+            .GetRequiredService<MainWindow>();
+
+            Application.Run(host);
+
         }
+
+
     }
 }

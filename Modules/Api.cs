@@ -15,31 +15,25 @@ namespace NuistAutoLogin.Modules
         WrongUsername,
         InternelError
     }
-    internal class Api
+    public class Api
 
     {
-        private string Username;
-        private string Password;
-        private string Carrier;
+        private States _state;
         private RestClient Client;
         public string IP;
 
         private readonly string baseUrl = "http://10.255.255.46/api/v1";
 
-        Api(string username, string password, string carrier)
+        public Api(States state)
         {
             Client = new RestClient(
                 new RestClientOptions(baseUrl)
                 );
-            Username = username;
-            Password = password;
-            Carrier = carrier;
+            _state = state;
         }
-        async Task<string> GetIP()
+        public async Task<string> GetIP()
         {
-            var resp = await Client.GetJsonAsync<ResponseIP>(
-                "/ip"
-                );
+            var resp = await Client.GetJsonAsync<ResponseIP>("/ip");
             IP = resp.ip;
             return resp.ip;
         }

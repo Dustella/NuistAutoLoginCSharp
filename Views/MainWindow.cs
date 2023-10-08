@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NuistAutoLogin.Modules;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,20 @@ namespace NuistAutoLogin
 {
     public partial class MainWindow : Form
     {
-        public MainWindow()
+        private Api _api;
+        private States _state;
+        public MainWindow(Api api, States state)
         {
             InitializeComponent();
+            this._api = api;
+            _state = state;
+            if (state.ConfigExists())
+            {
+                var user = state.User;
+                UsernameInput.Text = user.username;
+                PasswordInput.Text = user.password;
+                //CarrierInput.Text = user.carrier;
+            }
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -50,6 +62,21 @@ namespace NuistAutoLogin
         private void label3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private async void LoginButton_Click(object sender, EventArgs e)
+        {
+            var user = new UserRecord
+            {
+                username = UsernameInput.Text,
+                password = PasswordInput.Text,
+                carrier = "中国电信"
+            };
+            _state.User = user;
+            if (Remember.Checked)
+            {
+                _state.SaveConfig();
+            }
         }
     }
 }

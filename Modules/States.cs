@@ -8,11 +8,17 @@ namespace NuistAutoLogin.Modules
 {
     public class States
     { 
-        public UserRecord User { get; set; }
+        private readonly Logger _logger;
+        public States(Logger logger)
+        {
+            ReadConfig();
+            _logger = logger;
+        }
+        public UserRecord user { get; set; }
         public bool ConfigExists()
-            => System.IO.File.Exists(configPath);
+            => System.IO.File.Exists(_configPath);
 
-        private string configPath = System.IO.Path.Combine(
+        private readonly string _configPath = System.IO.Path.Combine(
                 Environment.GetFolderPath(
                     Environment.SpecialFolder.ApplicationData
                 ),
@@ -21,33 +27,35 @@ namespace NuistAutoLogin.Modules
 
         private void ReadConfig()
         {
-            if (!ConfigExists()) { return; }
+            if (!ConfigExists())
+            {
+                Logger.Log("Config not exists");
+                return;
+            }
 
-            var content = System.IO.File.ReadAllText(configPath);
+            var content = System.IO.File.ReadAllText(_configPath);
 
             var lines = content.Split('\n');
             var username = lines[0].Split('=')[1];
             var password = lines[1].Split('=')[1];
             var carrier = lines[2].Split('=')[1];
-            User = new UserRecord { username = username, password = password, carrier = carrier };
-
+            user = new UserRecord { username = username, password = password, carrier = carrier };
+            Logger.Log($"Read config: {user.username} {user.password} {user.carrier}");
         }
         public void SaveConfig()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"username={User.username}");
-            stringBuilder.AppendLine($"password={User.password}");
-            stringBuilder.AppendLine($"carrier={User.carrier}");
-            System.IO.File.WriteAllText(configPath, stringBuilder.ToString());
+            var builder = new StringBuilder();
+            builder.AppendLine($"username={user.username}");
+            builder.AppendLine($"password={user.password}");
+            builder.AppendLine($"carrier={user.carrier}");
+            System.IO.File.WriteAllText(_configPath, builder.ToString());
+            Logger.Log($"Save config: {user.username} {user.password} {user.carrier}");
         }
 
         public void DeleteConfig()
         {
-            System.IO.File.Delete(configPath);
-        }
-        public States()
-        {
-            ReadConfig();
+            System.IO.File.Delete(_configPath);
+            Logger.Log("Delete config");
         }
     }
 }

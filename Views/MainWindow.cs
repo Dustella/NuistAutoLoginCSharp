@@ -22,7 +22,7 @@ namespace NuistAutoLogin
             _state = state;
             if (state.ConfigExists())
             {
-                var user = state.User;
+                var user = state.user;
                 UsernameInput.Text = user.username;
                 PasswordInput.Text = user.password;
                 //CarrierInput.Text = user.carrier;
@@ -72,7 +72,7 @@ namespace NuistAutoLogin
                 password = PasswordInput.Text,
                 carrier = "中国电信"
             };
-            _state.User = user;
+            _state.user = user;
             if (Remember.Checked)
             {
                 _state.SaveConfig();

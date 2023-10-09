@@ -16,32 +16,31 @@ namespace NuistAutoLogin.Modules
         InternelError
     }
     public class Api
-
     {
         private States _state;
-        private RestClient Client;
-        public string IP;
+        private readonly RestClient _client;
+        public string Ip;
 
-        private readonly string baseUrl = "http://10.255.255.46/api/v1";
+        private const string BaseUrl = "http://10.255.255.46/api/v1";
 
-        public Api(States state)
+        public Api(States state, Logger logger)
         {
-            Client = new RestClient(
-                new RestClientOptions(baseUrl)
+            _client = new RestClient(
+                new RestClientOptions(BaseUrl)
                 );
             _state = state;
         }
-        public async Task<string> GetIP()
+        public async Task<string> GetIp()
         {
-            var resp = await Client.GetJsonAsync<ResponseIP>("/ip");
-            IP = resp.ip;
+            var resp = await _client.GetJsonAsync<ResponseIP>("/ip");
+            Ip = resp.ip;
             return resp.ip;
         }
 
 
         async Task<Result> DoLogin()
         {
-            var result = await Client.PostAsync(
+            var result = await _client.PostAsync(
               new RestRequest("/login").AddJsonBody(
                   new { id = 1 })
                );

@@ -10,7 +10,7 @@ namespace NuistAutoLogin.Modules
     public class ResponseIP
     {
         public int code { get; set; }
-        public string ip { get; set; }
+        public string data { get; set; }
     }
 
     public class UserRecord
@@ -18,6 +18,49 @@ namespace NuistAutoLogin.Modules
         public string username { get; set; }
         public string password { get; set; }
         public string carrier { get; set; }
+
+
+        private string getChannel(string carrier)
+        {
+            switch (carrier)
+            {
+                case "校园网":
+                    return "1";
+                case "中国移动":
+                    return "2";
+                case "中国电信":
+                    return "3";
+                case "中国联通":
+                    return "4";
+                default:
+                    return "0";
+            }
+        }
+
+        public RestRequest GenerateFirstAuth(string _ip)
+        => new RestRequest("/login").AddJsonBody(
+                new AuthRequest
+                {
+                    channel = getChannel(carrier),
+                    ifautologin = "0",
+                    pagesign = "firstauth",
+                    password = this.password,
+                    username = this.username,
+                    usripadd = _ip
+                });
+        public RestRequest GenerateSecondAuth(string _ip)
+        => new RestRequest("/login").AddJsonBody(
+                new AuthRequest
+                {
+                    channel = getChannel(carrier),
+                    ifautologin = "0",
+                    pagesign = "secondauth",
+                    password = this.password,
+                    username = this.username,
+                    usripadd = _ip
+                }
+    );
+
     }
 
     class AuthRequest
@@ -30,42 +73,22 @@ namespace NuistAutoLogin.Modules
         public string usripadd { get; set; }
 
     }
-    public class RequestBody
+
+    public class WrongData
     {
-        private UserRecord _user;
-        private string _ip;
-        public RequestBody(UserRecord user, string ip)
-        {
-            _user = user;
-            _ip = ip;
-        }
+        public string text { get; set; }
+    }
+    public class  ResponseResult
+    {
+        public int code { get; set; }
 
-        public RestRequest GenerateFirstAuth()
-        => new RestRequest("/login").AddJsonBody(
-               new AuthRequest
-               {
-                   channel = "0",
-                   ifautologin = "0",
-                   pagesign = "firstauth",
-                   password = _user.password,
-                   username = _user.username,
-                   usripadd = _ip
-               }
-            );
+        public string message { get; set; }
+        public WrongData data { get; set; }
 
 
-        public RestRequest GenerateSecondAuth()
-        => new RestRequest("/login").AddJsonBody(
-            new AuthRequest
-            {
-                channel = "0",
-                ifautologin = "0",
-                pagesign = "secondauth",
-                password = _user.password,
-                username = _user.username,
-                usripadd = _ip
-            }
-        );
+
+
+
 
     }
 }

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using NuistAutoLogin.Views;
 
 namespace NuistAutoLogin
 {
@@ -29,11 +28,10 @@ namespace NuistAutoLogin
                 services.AddSingleton<States>();
                 services.AddSingleton<Logger>();
                 services.AddTransient<MainWindow>();
-                services.AddTransient<LoadingIP>();
                 
             })
             .Build().Services
-            .GetRequiredService<LoadingIP>();
+            .GetRequiredService<MainWindow>();
 
             Application.Run(host);
 

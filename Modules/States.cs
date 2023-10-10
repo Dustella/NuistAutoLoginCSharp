@@ -36,9 +36,9 @@ namespace NuistAutoLogin.Modules
             var content = System.IO.File.ReadAllText(_configPath);
 
             var lines = content.Split('\n');
-            var username = lines[0].Split('=')[1];
-            var password = lines[1].Split('=')[1];
-            var carrier = lines[2].Split('=')[1];
+            var username = lines[0].Split('=')[1].Trim();
+            var password = lines[1].Split('=')[1].Trim();
+            var carrier = lines[2].Split('=')[1].Trim();
             user = new UserRecord { username = username, password = password, carrier = carrier };
             Logger.Log($"Read config: {user.username} {user.password} {user.carrier}");
         }
